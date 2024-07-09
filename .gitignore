@@ -1,3 +1,5 @@
 __pycache__
+.venv
+poetry.toml
 .vscode
 _tests
