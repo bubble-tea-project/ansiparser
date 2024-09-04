@@ -85,7 +85,7 @@ def to_html(inter_converted):
 
             line_div.append(tmp_span)
 
-            start_index = len(line_string[start_index:current_index])
+            start_index += len(line_string[start_index:current_index])
 
         last_style = style
         current_index += 1
