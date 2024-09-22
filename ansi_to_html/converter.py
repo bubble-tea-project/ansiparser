@@ -69,7 +69,7 @@ def to_html(inter_converted):
     if not inter_converted.text:
         return line_div
 
-    line_string = "".join(inter_converted.text)
+    line_string = "".join(inter_converted.text) # Note that white space collapses in HTML (if using a formatter).
     last_style = inter_converted.styles[0]
 
     start_index = 0

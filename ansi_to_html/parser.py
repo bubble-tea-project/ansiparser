@@ -220,7 +220,7 @@ class SequenceParser:
                 # If n is 0, clear from cursor to the end of the line
                 # include cursor char
                 inter_converted.text = inter_converted.text[ 0 : current_index ]
-                inter_converted.styles = inter_converted.text[ 0 : current_index ]
+                inter_converted.styles = inter_converted.styles[ 0 : current_index ]
 
             case 1:
                 # If n is 1, clear from cursor to beginning of the line.
@@ -405,7 +405,7 @@ class ScreenParser:
     def __put_last_screen(self , raw_lines ) -> None:
 
         last_screen = self.screen_buffer[-1]
-        last_screen.append(raw_lines)
+        last_screen.extend(raw_lines)
         
     def __parse_str_only(self) :
 
@@ -509,7 +509,8 @@ class ScreenParser:
             else:
                 self.__put_last_screen(raw_lines)
 
-    def to_string(self) -> str:
+    def to_string(self) -> list:
+        """pop"""
         
         if not self.screen_buffer:
             raise RuntimeError("no screen to convert")
