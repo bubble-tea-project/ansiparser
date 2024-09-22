@@ -128,10 +128,3 @@ def to_string(inter_converted: InterConverted, placeholder=False) -> str:
 
 
 
-
-# ---
-# parser
-
-
-
-
