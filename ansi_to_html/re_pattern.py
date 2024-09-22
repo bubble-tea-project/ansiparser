@@ -1,3 +1,10 @@
+"""
+ansi_to_html.re_pattern
+~~~~~~~~~~~~
+
+This module implements commonly used regular expression patterns for ansi_to_html.
+"""
+
 import re
 
 

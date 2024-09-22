@@ -1,82 +1,81 @@
+"""
+ansi_to_html.converter
+~~~~~~~~~~~~~~
+
+This module provides a converter to convert InterConverted to HTML or string.
+"""
+
+import bs4
 from bs4 import BeautifulSoup
 
-
-class InterConverted:
-    """intermediate conversion for ANSI escape."""
-
-    def __init__(self) -> None:
-
-        self.text = []
-        self.styles = []
-
-    def clear(self) -> None:
-
-        self.text = []
-        self.styles = []
+from .structures import InterConverted, WCharPH
 
 
-def sgr_parameters_to_attributes(parameters, current_sgr_attributes) -> dict:
-    """Convert SGR parameters to attributes."""
-    # sgr_attributes = { "style":set() , "background":"" , "foreground":"" }
+def html_lines_to_screen(html_lines: list) -> bs4.element.Tag:
+    """Merge multiple line <div> elements into a single screen <div>."""
+    soup = BeautifulSoup("", "html.parser")
 
-    for parameter in parameters:
+    screen_div = soup.new_tag("div")
+    screen_div["class"] = "screen"
 
-        match parameter:
-            case 0:
-                # Reset or normal
-                current_sgr_attributes["style"].clear()
-                current_sgr_attributes["background"] = ""
-                current_sgr_attributes["foreground"] = ""
+    for line in html_lines:
+        line["class"] = "line"
+        screen_div.append(line)
 
-            case parameter if (1 <= parameter <= 9 or
-                               22 <= parameter <= 29):
-                # font styles
-                current_sgr_attributes["style"].add(f"sgr_{parameter}")
+    return screen_div
 
-            case parameter if 30 <= parameter <= 37:
-                # Set foreground color
-                current_sgr_attributes["foreground"] = f"sgr_{parameter}"
 
-            case parameter if 40 <= parameter <= 47:
-                # Set background color
-                current_sgr_attributes["background"] = f"sgr_{parameter}"
-
-            case _:
-                raise NotImplementedError("Not supported.")
-
-    return current_sgr_attributes
-
-def sgr_attributes_to_css(sgr_attributes) -> str:
+def sgr_attributes_to_css(sgr_attributes: dict) -> str:
     """Convert SGR attributes to CSS class."""
 
+    # DEFAULT_SGR_ATTRIBUTES = { "style":set() , "background":"" , "foreground":"" }
     font_styles = " ".join(sgr_attributes["style"])
     color_foreground = sgr_attributes["foreground"]
     color_background = sgr_attributes["background"]
 
-    css_class = f"{font_styles} {color_foreground} {color_background}"
+    css_class = [font_styles, color_foreground, color_background]
 
-    return css_class
+    # Removes redundant spaces.
+    return " ".join(filter(None, css_class))
 
-def to_html(inter_converted):
 
-    if len(inter_converted.text) != len(inter_converted.styles):
-        raise RuntimeError("The text and styles in 'inter_converted' have different lengths.")
+def to_html(inter_converted: InterConverted, placeholder=False) -> bs4.element.Tag:
+    """convert InterConverted to HTML"""
+
+    if not inter_converted.validate():
+        raise ValueError("inter_converted is invalid.")
 
     soup = BeautifulSoup("", "html.parser")
     line_div = soup.new_tag("div")
 
-    # If empty (treated as newline).
-    if not inter_converted.text:
-        return line_div
+    # If empty, treat as a newline.
+    if inter_converted.empty():
+        return soup.new_tag("br")
 
-    line_string = "".join(inter_converted.text) # Note that white space collapses in HTML (if using a formatter).
-    last_style = inter_converted.styles[0]
+    # Process placeholders for wide characters.
+    filtered_char = []
+    filtered_style = []
+    for index, item in enumerate(inter_converted.text):
+
+        if (isinstance(item, WCharPH) and
+            placeholder is True):
+            # replace placeholders with spaces
+            filtered_char.append(" ")
+            filtered_style.append(inter_converted.styles[index])
+
+        if not isinstance(item, WCharPH):
+            # remove placeholder
+            filtered_char.append(item)
+            filtered_style.append(inter_converted.styles[index])
+
+    # convert
+    line_string = "".join(filtered_char)
+    last_style = filtered_style[0]
 
     start_index = 0
     current_index = 0
 
-    for style in inter_converted.styles:
-
+    for style in filtered_style:
         # Until a different style is encountered.
         if last_style != style:
             tmp_span = soup.new_tag("span")
@@ -99,15 +98,40 @@ def to_html(inter_converted):
 
     return line_div
 
-def html_lines_to_screen(html_lines):
 
-    soup = BeautifulSoup("", "html.parser")
+def to_string(inter_converted: InterConverted, placeholder=False) -> str:
+    """convert InterConverted to string"""
 
-    screen_div = soup.new_tag("div")
-    screen_div["class"] = "screen"
+    if not inter_converted.validate():
+        raise ValueError("inter_converted is invalid.")
 
-    for line in html_lines:
-        line["class"] = "line"
-        screen_div.append(line)
+    # If empty, treat as a newline.
+    if inter_converted.empty():
+        return ""
 
-    return screen_div
+    # Process placeholders for wide characters.
+    filtered_char = []
+    for item in inter_converted.text:
+
+        if (isinstance(item, WCharPH) and
+                placeholder is True):
+            # replace placeholders with spaces
+            filtered_char.append(" ")
+
+        if not isinstance(item, WCharPH):
+            # remove placeholder
+            filtered_char.append(item)
+
+
+    return "".join(filtered_char)
+
+
+
+
+
+# ---
+# parser
+
+
+
+
