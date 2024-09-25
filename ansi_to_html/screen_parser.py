@@ -166,6 +166,10 @@ class ScreenParser:
                 # overwrite
                 parsed_screen[self.current_line_index] = parsed_line
 
+            # If parsed_screen length exceeds screen_height, scroll (by removing the first line).
+            if len(parsed_screen) > self.screen_height:
+                parsed_screen.pop(0)
+                self.current_line_index -= 1
         #
         return parsed_screen
 
