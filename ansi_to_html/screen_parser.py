@@ -5,6 +5,7 @@ ansi_to_html.screen_parser
 This module implements the parser that converts sequences to parsed_screen[InterConverted].
 """
 
+import copy
 import re
 from collections import deque
 
@@ -263,7 +264,7 @@ class ScreenParser:
 
     def parsed_screen(self) -> list:
         """return underlying current `parsed_screen` """
-        return self.current_parsed_screen
+        return copy.deepcopy(self.current_parsed_screen)
 
     def peek_string(self) -> str:
         """Peek at the current buffer; parse the string only and remove all ANSI sequences."""
