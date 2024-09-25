@@ -148,7 +148,7 @@ class ScreenParser:
 
         if peek is True:
             raw_screen = self.screen_buffer[0]
-            parsed_screen = []
+            parsed_screen = [] # ! refactor: deque
         else:
             raw_screen = self.screen_buffer.popleft()
             parsed_screen = self.current_parsed_screen.copy()
