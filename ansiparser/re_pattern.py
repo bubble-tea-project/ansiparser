@@ -1,8 +1,8 @@
 """
-ansi_to_html.re_pattern
+ansiparser.re_pattern
 ~~~~~~~~~~~~
 
-This module implements commonly used regular expression patterns for ansi_to_html.
+This module implements commonly used regular expression patterns for ansiparser.
 """
 
 import re

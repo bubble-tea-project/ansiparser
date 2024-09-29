@@ -1,5 +1,5 @@
 """
-ansi_to_html.screen_parser
+ansiparser.screen_parser
 ~~~~~~~~~~~~~~
 
 This module implements the parser that converts sequences to parsed_screen[InterConverted].

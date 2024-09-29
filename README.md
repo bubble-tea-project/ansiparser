@@ -1,4 +1,4 @@
-<h1 align="center">ansi-to-html</h1>
+<h1 align="center">AnsiParser</h1>
 
 <div align="center">
 
@@ -25,13 +25,13 @@ Parse ANSI escape sequences into screen outputs. This library implements a parse
 
 ## 🎨 Usage
 ```python
-import ansi_to_html
+import ansiparser
 
-a2h_screen = ansi_to_html.new_screen()
-a2h_screen.put("\x1b[1;6H-World!\x1b[1;1HHello")
+ansip_screen = ansiparser.new_screen()
+ansip_screen.put("\x1b[1;6H-World!\x1b[1;1HHello")
 
-a2h_screen.parse()
-converted = a2h_screen.to_formatted_string()
+ansip_screen.parse()
+converted = ansip_screen.to_formatted_string()
 
 print(converted) # ['Hello-World!']
 ```

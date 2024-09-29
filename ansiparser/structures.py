@@ -1,8 +1,8 @@
 """
-ansi_to_html.structures
+ansiparser.structures
 ~~~~~~~~~~~~~~~~~~~
 
-Data structures used in ansi_to_html.
+Data structures used in ansiparser.
 """
 
 

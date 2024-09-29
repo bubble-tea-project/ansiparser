@@ -1,8 +1,8 @@
 """
-ansi_to_html.api
+ansiparser.api
 ~~~~~~~~~~~~~~
 
-This module implements the ansi_to_html API.
+This module implements the ansiparser API.
 """
 
 from . import screen_parser

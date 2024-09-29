@@ -1,5 +1,5 @@
 """
-ansi_to_html Library
+ansiparser Library
 ~~~~~~~~~~~~~~
 
 

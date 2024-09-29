@@ -1,5 +1,5 @@
 """
-ansi_to_html.sequence_utils
+ansiparser.sequence_utils
 ~~~~~~~~~~~~~~
 
 This module provides functions to check CSI sequences and extract their parameters.

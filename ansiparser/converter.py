@@ -1,5 +1,5 @@
 """
-ansi_to_html.converter
+ansiparser.converter
 ~~~~~~~~~~~~~~
 
 This module provides a converter to convert InterConverted to HTML or string.

@@ -1,5 +1,5 @@
 """
-ansi_to_html.sequence_parser
+ansiparser.sequence_parser
 ~~~~~~~~~~~~~~
 
 This module implements the underlying parser that converts sequences to InterConverted.
