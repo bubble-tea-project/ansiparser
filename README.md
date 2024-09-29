@@ -14,6 +14,8 @@ A convenient library for converting ANSI escape sequences into text or HTML.
 ## 📖 Description
 Parse ANSI escape sequences into screen outputs. This library implements a parser that processes escape sequences like a terminal, allowing you to convert them into formatted text or HTML.
 
+Pypi: https://pypi.org/project/ansiparser/
+
 ## ✨ Supported Features
 - CSI (Control Sequence Introducer) sequences
     - SGR (Select Graphic Rendition) 
