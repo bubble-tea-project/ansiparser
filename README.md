@@ -5,8 +5,8 @@
 A convenient library for converting ANSI escape sequences into text or HTML.
 
 
-![GitHub last commit](https://img.shields.io/github/last-commit/bubble-tea-project/ansi-to-html) 
-![GitHub License](https://img.shields.io/github/license/bubble-tea-project/ansi-to-html)
+![GitHub last commit](https://img.shields.io/github/last-commit/bubble-tea-project/ansiparser) 
+![GitHub License](https://img.shields.io/github/license/bubble-tea-project/ansiparser)
 
 </div>
 
@@ -38,7 +38,7 @@ print(converted) # ['Hello-World!']
 
 
 ## 📜 License
-![GitHub License](https://img.shields.io/github/license/bubble-tea-project/ansi-to-html)
+![GitHub License](https://img.shields.io/github/license/bubble-tea-project/ansiparser)
 
 
 
