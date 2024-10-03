@@ -1,17 +1,19 @@
 [tool.poetry]
 name = "ansiparser"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+version = "0.0.1"
+description = "A convenient library for converting ANSI escape sequences into text or HTML."
+authors = ["vHrqO <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 beautifulsoup4 = "^4.12.3"
 
 
 [tool.poetry.group.dev.dependencies]
 beautifulsoup4 = "^4.12.3"
+twine = "^5.1.1"
+setuptools = "^75.1.0"
 
 [build-system]
 requires = ["poetry-core"]
