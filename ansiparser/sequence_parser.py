@@ -9,54 +9,49 @@ import copy
 import unicodedata
 
 from .sequence_utils import ParametersExtractor
-from .structures import InterConverted, WCharPH
+from .structures import InterConverted, SgrAttributes, WCharPH
 
 
-def sgr_parameters_to_attributes(parameters: list[int], current_sgr_attributes: dict) -> dict:
+def _sgr_parameters_to_attributes(parameters: list[int], sgr_attributes: SgrAttributes) -> SgrAttributes:
     """Convert SGR parameters to attributes."""
-    # sgr_attributes = { "style":set() , "background":"" , "foreground":"" }
 
     for parameter in parameters:
 
         match parameter:
             case 0:
                 # Reset or normal
-                current_sgr_attributes["style"].clear()
-                current_sgr_attributes["background"] = ""
-                current_sgr_attributes["foreground"] = ""
+                sgr_attributes.clear()
 
             case parameter if (1 <= parameter <= 9 or
                                22 <= parameter <= 29):
                 # font styles
-                current_sgr_attributes["style"].add(f"sgr_{parameter}")
+                sgr_attributes.style.add(f"sgr_{parameter}")
 
             case parameter if 30 <= parameter <= 37:
                 # Set foreground color
-                current_sgr_attributes["foreground"] = f"sgr_{parameter}"
+                sgr_attributes.foreground = f"sgr_{parameter}"
 
             case parameter if 40 <= parameter <= 47:
                 # Set background color
-                current_sgr_attributes["background"] = f"sgr_{parameter}"
+                sgr_attributes.background = f"sgr_{parameter}"
 
             case _:
                 raise NotImplementedError("Not supported yet.")
 
-    return current_sgr_attributes
+    return sgr_attributes
 
 
 class SequenceParser:
 
     def __init__(self) -> None:
-
-        self.DEFAULT_SGR_ATTRIBUTES = {"style": set(), "background": "", "foreground": ""}  # to class?
-        # refactor -> arg
-
+        pass
+        
     def __process_char(
         self,
         char: str,
         mode: str,
         inter_converted: InterConverted,
-        current_sgr_attributes: dict,
+        current_sgr_attributes: SgrAttributes,
         current_index: int
     ) -> tuple[InterConverted, int]:
         # https://stackoverflow.com/questions/23058564/checking-a-character-is-fullwidth-or-halfwidth-in-python
@@ -84,7 +79,7 @@ class SequenceParser:
                     inter_converted.text[current_index + 1:current_index + 3] = [wcharph, " "]
                 else:
                     inter_converted.text[current_index + 1] = wcharph
-        
+
         is_new_wide = is_char_wide(char)
 
         match mode:
@@ -151,9 +146,9 @@ class SequenceParser:
     def parse_text(
         self,
         sequence: str,
-        inter_converted,
-        current_sgr_attributes,
-        current_index
+        inter_converted: InterConverted,
+        current_sgr_attributes: SgrAttributes,
+        current_index: int
     ) -> tuple[InterConverted, int]:
         """Parse sequence only containing text."""
 
@@ -161,7 +156,7 @@ class SequenceParser:
             inter_converted = InterConverted()
 
         if current_sgr_attributes is None:
-            current_sgr_attributes = copy.copy(self.DEFAULT_SGR_ATTRIBUTES)
+            current_sgr_attributes = SgrAttributes()
 
         # Fill empty spaces if the cursor is moved.
         # exclude current
@@ -169,7 +164,7 @@ class SequenceParser:
         need = current_index - max_index - 1
         if need > 0:
             inter_converted.text.extend([" "] * need)  # space
-            inter_converted.styles.extend([copy.copy(self.DEFAULT_SGR_ATTRIBUTES)] * need)  # default
+            inter_converted.styles.extend([SgrAttributes() for _ in range(need)])  # default
 
         # process text
         char_list = list(sequence)
@@ -189,17 +184,17 @@ class SequenceParser:
     def parse_sgr(
         self,
         sequence: str,
-        current_sgr_attributes: dict
-    ) -> dict:
+        current_sgr_attributes: SgrAttributes
+    ) -> SgrAttributes:
         """Parse "Select Graphic Rendition" sequence."""
 
         if current_sgr_attributes is None:
-            current_sgr_attributes = copy.copy(self.DEFAULT_SGR_ATTRIBUTES)
+            current_sgr_attributes = SgrAttributes()
 
         extracter = ParametersExtractor()
         parameters = extracter.extract_sgr(sequence)
 
-        return sgr_parameters_to_attributes(parameters, current_sgr_attributes)
+        return _sgr_parameters_to_attributes(parameters, current_sgr_attributes)
 
     def parse_el(
         self,
@@ -227,7 +222,7 @@ class SequenceParser:
                 # If n is 1, clear from cursor to beginning of the line.
                 # include cursor char
                 inter_converted.text[0: current_index + 1] = [" "] * (current_index + 1)  # space
-                inter_converted.styles[0: current_index + 1] = [copy.copy(self.DEFAULT_SGR_ATTRIBUTES)] * (current_index + 1)  # default
+                inter_converted.styles[0: current_index + 1] = [SgrAttributes() for _ in range(current_index + 1)]  # default
 
             case 2:
                 # If n is 2, clear entire line.
@@ -269,7 +264,7 @@ class SequenceParser:
                 parsed_screen[0:current_line_index + 1] = [InterConverted() for _ in range(current_line_index + 1)]  # as newline
 
                 inter_converted.text[0: current_index + 1] = [" "] * (current_index + 1)
-                inter_converted.styles[0: current_index + 1] = [copy.copy(self.DEFAULT_SGR_ATTRIBUTES)] * (current_index + 1)
+                inter_converted.styles[0: current_index + 1] = [SgrAttributes() for _ in range(current_index + 1)]
 
             case 2:
                 # If n is 2, clear entire screen (and moves cursor to upper left on DOS ANSI.SYS).
@@ -330,8 +325,8 @@ class SequenceParser:
             "current_index": current_index,
             "parsed_screen": parsed_screen,
             "current_line_index": current_line_index
-        } 
-        
+        }
+
     def parse_newline(
         self,
         sequence: str,

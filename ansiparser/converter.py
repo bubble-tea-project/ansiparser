@@ -8,7 +8,7 @@ This module provides a converter to convert InterConverted to HTML or string.
 import bs4
 from bs4 import BeautifulSoup
 
-from .structures import InterConverted, WCharPH
+from .structures import InterConverted, SgrAttributes, WCharPH
 
 
 def html_lines_to_screen(html_lines: list) -> bs4.element.Tag:
@@ -25,13 +25,12 @@ def html_lines_to_screen(html_lines: list) -> bs4.element.Tag:
     return screen_div
 
 
-def sgr_attributes_to_css(sgr_attributes: dict) -> str:
+def sgr_attributes_to_css(sgr_attributes: SgrAttributes) -> str:
     """Convert SGR attributes to CSS class."""
 
-    # DEFAULT_SGR_ATTRIBUTES = { "style":set() , "background":"" , "foreground":"" }
-    font_styles = " ".join(sgr_attributes["style"])
-    color_foreground = sgr_attributes["foreground"]
-    color_background = sgr_attributes["background"]
+    font_styles = " ".join(sgr_attributes.style)
+    color_foreground = sgr_attributes.foreground
+    color_background = sgr_attributes.background
 
     css_class = [font_styles, color_foreground, color_background]
 
@@ -122,9 +121,4 @@ def to_string(inter_converted: InterConverted, placeholder=False) -> str:
             # remove placeholder
             filtered_char.append(item)
 
-
     return "".join(filtered_char)
-
-
-
-
