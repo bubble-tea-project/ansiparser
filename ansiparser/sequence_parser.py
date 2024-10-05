@@ -58,7 +58,7 @@ class SequenceParser:
         inter_converted: InterConverted,
         current_sgr_attributes: dict,
         current_index: int
-    ):
+    ) -> tuple[InterConverted, int]:
         # https://stackoverflow.com/questions/23058564/checking-a-character-is-fullwidth-or-halfwidth-in-python
 
         if not inter_converted.validate():
