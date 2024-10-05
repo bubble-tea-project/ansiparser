@@ -125,7 +125,9 @@ class ScreenParser:
 
             # text
             elif not csi_checker.is_csi(sequence_str):
-                inter_converted, self.current_index = sequence_parser.parse_text(sequence_str, inter_converted, self.current_sgr_attributes, self.current_index)
+                inter_converted, self.current_index = sequence_parser.parse_text(sequence_str, inter_converted,
+                                                                                 self.current_sgr_attributes,
+                                                                                 self.current_index)
 
             # Erase in Line
             elif csi_checker.is_el_sequence(sequence_str):
@@ -133,7 +135,10 @@ class ScreenParser:
 
             # Erase in Display
             elif csi_checker.is_ed_sequence(sequence_str):
-                inter_converted, parsed_screen = sequence_parser.parse_ed(sequence_str, inter_converted, self.current_index, parsed_screen, self.current_line_index)
+                inter_converted, parsed_screen = sequence_parser.parse_ed(sequence_str, inter_converted,
+                                                                          self.current_index,
+                                                                          parsed_screen,
+                                                                          self.current_line_index)
 
             # Cursor Position
             elif csi_checker.is_cup_sequence(sequence_str):
