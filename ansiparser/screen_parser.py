@@ -2,7 +2,7 @@
 ansiparser.screen_parser
 ~~~~~~~~~~~~~~
 
-This module implements the parser that converts sequences to parsed_screen[InterConverted].
+This module implements the parser that converts sequences into parsed_screen (a collection of InterConverted).
 """
 
 import copy
@@ -46,7 +46,7 @@ class ScreenParser:
 
         self.screen_buffer = deque()
 
-        self.current_parsed_screen = []
+        self.current_parsed_screen = deque()
         self.current_line_index = 0
         self.current_index = 0
         self.current_sgr_attributes = None
@@ -100,7 +100,7 @@ class ScreenParser:
         #
         return parsed_string
 
-    def __parse_line(self, raw_line: str, parsed_screen: list) -> tuple[InterConverted, list]:
+    def __parse_line(self, raw_line: str, parsed_screen: deque) -> tuple[InterConverted, deque]:
 
         csi_checker = CSIChecker()
         sequence_parser = SequenceParser()
@@ -142,14 +142,14 @@ class ScreenParser:
         #
         return inter_converted, parsed_screen
 
-    def __parse(self, peek: bool) -> list:
+    def __parse(self, peek: bool) -> deque:
 
         if not self.screen_buffer:
             raise IndexError("screen_buffer is empty")
 
         if peek is True:
             raw_screen = self.screen_buffer[0]
-            parsed_screen = [] # ! refactor: deque
+            parsed_screen = deque()
         else:
             raw_screen = self.screen_buffer.popleft()
             parsed_screen = self.current_parsed_screen.copy()
@@ -169,15 +169,15 @@ class ScreenParser:
 
             # If parsed_screen length exceeds screen_height, scroll (by removing the first line).
             if len(parsed_screen) > self.screen_height:
-                parsed_screen.pop(0)
+                parsed_screen.popleft()
                 self.current_line_index -= 1
         #
         return parsed_screen
 
-    def from_parsed_screen(self, parsed_screen: list) -> None:
+    def from_parsed_screen(self, parsed_screen: deque) -> None:
         """Initialize from `parsed_screen`."""
 
-        if not (type(parsed_screen) is list and
+        if not (type(parsed_screen) is deque and
                 parsed_screen and
                 type(parsed_screen[0]) is InterConverted):
 
@@ -230,7 +230,7 @@ class ScreenParser:
     def clear(self) -> None:
         """clear current parsed_screen and index"""
 
-        self.current_parsed_screen = []
+        self.current_parsed_screen = deque()
         self.current_line_index = 0
         self.current_index = 0
 
@@ -262,7 +262,7 @@ class ScreenParser:
         while self.finished():
             self.screen_buffer.popleft()
 
-    def parsed_screen(self) -> list:
+    def parsed_screen(self) -> deque:
         """return underlying current `parsed_screen` """
         return copy.deepcopy(self.current_parsed_screen)
 
