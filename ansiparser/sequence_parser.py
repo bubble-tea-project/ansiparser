@@ -325,9 +325,12 @@ class SequenceParser:
         current_index = next_index
         current_line_index = next_line_index
 
-        return inter_converted, current_index, parsed_screen, current_line_index
-
-    def parse_newline(self, sequence: str, inter_converted: InterConverted, current_index: int, parsed_screen: list, current_line_index: int) -> tuple[InterConverted, int, list, int]:
+        return {
+            "inter_converted": inter_converted,
+            "current_index": current_index,
+            "parsed_screen": parsed_screen,
+            "current_line_index": current_line_index
+        } 
         
     def parse_newline(
         self,
@@ -375,4 +378,9 @@ class SequenceParser:
         # moves the cursor down to the next line without returning to the beginning of the line
         # "current_index" does not change
 
-        return inter_converted, current_index, parsed_screen, current_line_index
+        return {
+            "inter_converted": inter_converted,
+            "current_index": current_index,
+            "parsed_screen": parsed_screen,
+            "current_line_index": current_line_index
+        }

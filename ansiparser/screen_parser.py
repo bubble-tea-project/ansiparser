@@ -121,7 +121,15 @@ class ScreenParser:
 
             # newline
             elif sequence_str in ("\r\n", "\n", "\r"):
-                inter_converted, self.current_index, parsed_screen, self.current_line_index = sequence_parser.parse_newline(sequence_str, inter_converted, self.current_index, parsed_screen, self.current_line_index)
+                result = sequence_parser.parse_newline(sequence_str, inter_converted,
+                                                       self.current_index,
+                                                       parsed_screen,
+                                                       self.current_line_index)
+
+                inter_converted = result["inter_converted"]
+                self.current_index = result["current_index"]
+                parsed_screen = result["parsed_screen"]
+                self.current_line_index = result["current_line_index"]
 
             # text
             elif not csi_checker.is_csi(sequence_str):
@@ -142,7 +150,15 @@ class ScreenParser:
 
             # Cursor Position
             elif csi_checker.is_cup_sequence(sequence_str):
-                inter_converted, self.current_index, parsed_screen, self.current_line_index = sequence_parser.parse_cup(sequence_str, inter_converted, self.current_index, parsed_screen, self.current_line_index)
+                result = sequence_parser.parse_cup(sequence_str, inter_converted,
+                                                   self.current_index,
+                                                   parsed_screen,
+                                                   self.current_line_index)
+
+                inter_converted = result["inter_converted"]
+                self.current_index = result["current_index"]
+                parsed_screen = result["parsed_screen"]
+                self.current_line_index = result["current_line_index"]
 
         #
         return inter_converted, parsed_screen
