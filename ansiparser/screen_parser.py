@@ -12,7 +12,7 @@ from collections import deque
 from . import converter, re_pattern
 from .sequence_parser import SequenceParser
 from .sequence_utils import CSIChecker
-from .structures import InterConverted
+from .structures import InterConverted , SgrAttributes
 
 
 def apply_backspace(string: str) -> str:
@@ -49,7 +49,7 @@ class ScreenParser:
         self.current_parsed_screen = deque()
         self.current_line_index = 0
         self.current_index = 0
-        self.current_sgr_attributes = None
+        self.current_sgr_attributes = SgrAttributes()
 
         self.screen_height = screen_height
         self.screen_width = screen_width

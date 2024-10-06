@@ -49,6 +49,15 @@ class SgrAttributes:
         self.background = ""
         self.foreground = ""
 
+    def empty(self) -> bool:
+        """Return True if all elements are empty, otherwise return False."""
+        if (not self.style and
+            not self.background and
+            not self.foreground):
+            return True
+        else:
+            return False
+
 
 class InterConverted:
     """Single-line intermediate conversion of ANSI escape codes."""

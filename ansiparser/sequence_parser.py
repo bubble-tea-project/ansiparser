@@ -155,9 +155,6 @@ class SequenceParser:
         if inter_converted is None:
             inter_converted = InterConverted()
 
-        if current_sgr_attributes is None:
-            current_sgr_attributes = SgrAttributes()
-
         # Fill empty spaces if the cursor is moved.
         # exclude current
         max_index = len(inter_converted.text) - 1
@@ -187,9 +184,6 @@ class SequenceParser:
         current_sgr_attributes: SgrAttributes
     ) -> SgrAttributes:
         """Parse "Select Graphic Rendition" sequence."""
-
-        if current_sgr_attributes is None:
-            current_sgr_attributes = SgrAttributes()
 
         extracter = ParametersExtractor()
         parameters = extracter.extract_sgr(sequence)
