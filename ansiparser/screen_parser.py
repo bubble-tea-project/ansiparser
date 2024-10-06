@@ -104,6 +104,7 @@ class ScreenParser:
         return parsed_string
 
     def __parse_line(self, raw_line: str, parsed_screen: deque) -> tuple[InterConverted, deque]:
+        """Parse the single line that is split by a newline character."""
         
         csi_checker = CSIChecker()
         sequence_parser = SequenceParser()
@@ -167,6 +168,8 @@ class ScreenParser:
         return inter_converted, parsed_screen
 
     def __parse(self, peek: bool) -> deque:
+        """Remove the current `screen_buffer` and parse, then overwrite `current_parsed_screen`. \n
+        If `peek` is True, only peek and parse the current buffer."""
 
         if not self.screen_buffer:
             raise IndexError("screen_buffer is empty")
@@ -199,7 +202,7 @@ class ScreenParser:
         return parsed_screen
 
     def from_parsed_screen(self, parsed_screen: deque) -> None:
-        """Initialize from `parsed_screen`."""
+        """Initialize from an existing `parsed_screen`."""
 
         if not (type(parsed_screen) is deque and
                 parsed_screen and
@@ -232,7 +235,7 @@ class ScreenParser:
                 last_screen.extend([raw_screen])
 
     def parse(self) -> None:
-        """remove current screen_buffer and parsed"""
+        """Remove the current screen_buffer and parse it."""
         self.current_parsed_screen = self.__parse(peek=False)
 
     def buffer(self) -> None | deque:
