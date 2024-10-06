@@ -104,7 +104,7 @@ class ScreenParser:
         return parsed_string
 
     def __parse_line(self, raw_line: str, parsed_screen: deque) -> tuple[InterConverted, deque]:
-
+        
         csi_checker = CSIChecker()
         sequence_parser = SequenceParser()
 
@@ -113,7 +113,7 @@ class ScreenParser:
             inter_converted = parsed_screen[self.current_line_index]
         else:
             # or use new
-            inter_converted = None
+            inter_converted = InterConverted()
 
         splited_sequences = split_by_ansi(raw_line)
         for sequence_str in splited_sequences:

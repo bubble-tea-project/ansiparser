@@ -152,9 +152,6 @@ class SequenceParser:
     ) -> tuple[InterConverted, int]:
         """Parse sequence only containing text."""
 
-        if inter_converted is None:
-            inter_converted = InterConverted()
-
         # Fill empty spaces if the cursor is moved.
         # exclude current
         max_index = len(inter_converted.text) - 1
@@ -199,9 +196,6 @@ class SequenceParser:
         """Parse "Erase in Line" sequence."""
         # Cursor position does not change.
 
-        if inter_converted is None:
-            inter_converted = InterConverted()
-
         extracter = ParametersExtractor()
         parameter = extracter.extract_el(sequence)
 
@@ -236,9 +230,6 @@ class SequenceParser:
         current_line_index: int
     ) -> tuple[InterConverted, list]:
         """Parse "Erase in Display" sequence."""
-
-        if inter_converted is None:
-            inter_converted = InterConverted()
 
         extracter = ParametersExtractor()
         parameter = extracter.extract_ed(sequence)
@@ -330,9 +321,6 @@ class SequenceParser:
         current_line_index: int
     ) -> dict:
         """Parse "newline("\r\n", "\n", "\r")" sequence."""
-
-        if inter_converted is None:
-            inter_converted = InterConverted()
 
         if sequence not in ("\r\n", "\n", "\r"):
             raise RuntimeError()
