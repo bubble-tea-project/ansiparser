@@ -2,7 +2,7 @@
 ansiparser.screen_parser
 ~~~~~~~~~~~~~~
 
-This module implements the parser that converts sequences to parsed_screen[InterConverted].
+This module implements the parser that converts sequences into parsed_screen (a collection of InterConverted).
 """
 
 import copy
@@ -12,7 +12,7 @@ from collections import deque
 from . import converter, re_pattern
 from .sequence_parser import SequenceParser
 from .sequence_utils import CSIChecker
-from .structures import InterConverted
+from .structures import InterConverted , SgrAttributes
 
 
 def apply_backspace(string: str) -> str:
@@ -46,10 +46,10 @@ class ScreenParser:
 
         self.screen_buffer = deque()
 
-        self.current_parsed_screen = []
+        self.current_parsed_screen = deque()
         self.current_line_index = 0
         self.current_index = 0
-        self.current_sgr_attributes = None
+        self.current_sgr_attributes = SgrAttributes()
 
         self.screen_height = screen_height
         self.screen_width = screen_width
@@ -78,17 +78,21 @@ class ScreenParser:
         # return [string] if there is no newline.
         return results
 
-    def __parse_str_only(self) -> str:
-        """Parse the string only; remove all ANSI sequences."""
+    def __parse_str_only(self, peek: bool) -> str:
+        """Parse the string only; remove all ANSI sequences. \n
+        If `peek` is True, peek at the current buffer; otherwise, pop elements from the left side of the buffer."""
 
         if not self.screen_buffer:
             raise IndexError("screen_buffer is empty")
 
+        if peek is True:
+            raw_screen = self.screen_buffer[0]
+        else:
+            raw_screen = self.screen_buffer.popleft()
+
         csi_checker = CSIChecker()
 
-        raw_screen = self.screen_buffer[0]
         parsed_string = ""
-
         for data in raw_screen:
 
             splited_sequences = split_by_ansi(data)
@@ -96,12 +100,12 @@ class ScreenParser:
 
                 if not csi_checker.is_csi(sequence_str):
                     parsed_string += sequence_str
-
         #
         return parsed_string
 
-    def __parse_line(self, raw_line: str, parsed_screen: list) -> tuple[InterConverted, list]:
-
+    def __parse_line(self, raw_line: str, parsed_screen: deque) -> tuple[InterConverted, deque]:
+        """Parse the single line that is split by a newline character."""
+        
         csi_checker = CSIChecker()
         sequence_parser = SequenceParser()
 
@@ -110,7 +114,7 @@ class ScreenParser:
             inter_converted = parsed_screen[self.current_line_index]
         else:
             # or use new
-            inter_converted = None
+            inter_converted = InterConverted()
 
         splited_sequences = split_by_ansi(raw_line)
         for sequence_str in splited_sequences:
@@ -121,11 +125,21 @@ class ScreenParser:
 
             # newline
             elif sequence_str in ("\r\n", "\n", "\r"):
-                inter_converted, self.current_index, parsed_screen, self.current_line_index = sequence_parser.parse_newline(sequence_str, inter_converted, self.current_index, parsed_screen, self.current_line_index)
+                result = sequence_parser.parse_newline(sequence_str, inter_converted,
+                                                       self.current_index,
+                                                       parsed_screen,
+                                                       self.current_line_index)
+
+                inter_converted = result["inter_converted"]
+                self.current_index = result["current_index"]
+                parsed_screen = result["parsed_screen"]
+                self.current_line_index = result["current_line_index"]
 
             # text
             elif not csi_checker.is_csi(sequence_str):
-                inter_converted, self.current_index = sequence_parser.parse_text(sequence_str, inter_converted, self.current_sgr_attributes, self.current_index)
+                inter_converted, self.current_index = sequence_parser.parse_text(sequence_str, inter_converted,
+                                                                                 self.current_sgr_attributes,
+                                                                                 self.current_index)
 
             # Erase in Line
             elif csi_checker.is_el_sequence(sequence_str):
@@ -133,23 +147,36 @@ class ScreenParser:
 
             # Erase in Display
             elif csi_checker.is_ed_sequence(sequence_str):
-                inter_converted, parsed_screen = sequence_parser.parse_ed(sequence_str, inter_converted, self.current_index, parsed_screen, self.current_line_index)
+                inter_converted, parsed_screen = sequence_parser.parse_ed(sequence_str, inter_converted,
+                                                                          self.current_index,
+                                                                          parsed_screen,
+                                                                          self.current_line_index)
 
             # Cursor Position
             elif csi_checker.is_cup_sequence(sequence_str):
-                inter_converted, self.current_index, parsed_screen, self.current_line_index = sequence_parser.parse_cup(sequence_str, inter_converted, self.current_index, parsed_screen, self.current_line_index)
+                result = sequence_parser.parse_cup(sequence_str, inter_converted,
+                                                   self.current_index,
+                                                   parsed_screen,
+                                                   self.current_line_index)
+
+                inter_converted = result["inter_converted"]
+                self.current_index = result["current_index"]
+                parsed_screen = result["parsed_screen"]
+                self.current_line_index = result["current_line_index"]
 
         #
         return inter_converted, parsed_screen
 
-    def __parse(self, peek: bool) -> list:
+    def __parse(self, peek: bool) -> deque:
+        """Remove the current `screen_buffer` and parse, then overwrite `current_parsed_screen`. \n
+        If `peek` is True, only peek and parse the current buffer."""
 
         if not self.screen_buffer:
             raise IndexError("screen_buffer is empty")
 
         if peek is True:
             raw_screen = self.screen_buffer[0]
-            parsed_screen = [] # ! refactor: deque
+            parsed_screen = deque()
         else:
             raw_screen = self.screen_buffer.popleft()
             parsed_screen = self.current_parsed_screen.copy()
@@ -169,15 +196,15 @@ class ScreenParser:
 
             # If parsed_screen length exceeds screen_height, scroll (by removing the first line).
             if len(parsed_screen) > self.screen_height:
-                parsed_screen.pop(0)
+                parsed_screen.popleft()
                 self.current_line_index -= 1
         #
         return parsed_screen
 
-    def from_parsed_screen(self, parsed_screen: list) -> None:
-        """Initialize from `parsed_screen`."""
+    def from_parsed_screen(self, parsed_screen: deque) -> None:
+        """Initialize from an existing `parsed_screen`."""
 
-        if not (type(parsed_screen) is list and
+        if not (type(parsed_screen) is deque and
                 parsed_screen and
                 type(parsed_screen[0]) is InterConverted):
 
@@ -208,7 +235,7 @@ class ScreenParser:
                 last_screen.extend([raw_screen])
 
     def parse(self) -> None:
-        """remove current screen_buffer and parsed"""
+        """Remove the current screen_buffer and parse it."""
         self.current_parsed_screen = self.__parse(peek=False)
 
     def buffer(self) -> None | deque:
@@ -230,7 +257,7 @@ class ScreenParser:
     def clear(self) -> None:
         """clear current parsed_screen and index"""
 
-        self.current_parsed_screen = []
+        self.current_parsed_screen = deque()
         self.current_line_index = 0
         self.current_index = 0
 
@@ -262,13 +289,13 @@ class ScreenParser:
         while self.finished():
             self.screen_buffer.popleft()
 
-    def parsed_screen(self) -> list:
+    def parsed_screen(self) -> deque:
         """return underlying current `parsed_screen` """
         return copy.deepcopy(self.current_parsed_screen)
 
     def peek_string(self) -> str:
         """Peek at the current buffer; parse the string only and remove all ANSI sequences."""
-        return self.__parse_str_only()
+        return self.__parse_str_only(peek=True)
 
     def to_formatted_string(self, peek=False) -> list[str]:
         """Convert the current `parsed_screen` to a formatted string. 

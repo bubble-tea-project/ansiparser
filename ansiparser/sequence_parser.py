@@ -7,51 +7,55 @@ This module implements the underlying parser that converts sequences to InterCon
 
 import copy
 import unicodedata
+import itertools
+from collections import deque
 
 from .sequence_utils import ParametersExtractor
-from .structures import InterConverted, WCharPH
+from .structures import InterConverted, SgrAttributes, WCharPH
 
 
-def sgr_parameters_to_attributes(parameters: list[int], current_sgr_attributes: dict) -> dict:
+def _sgr_parameters_to_attributes(parameters: list[int], sgr_attributes: SgrAttributes) -> SgrAttributes:
     """Convert SGR parameters to attributes."""
-    # sgr_attributes = { "style":set() , "background":"" , "foreground":"" }
 
     for parameter in parameters:
 
         match parameter:
             case 0:
                 # Reset or normal
-                current_sgr_attributes["style"].clear()
-                current_sgr_attributes["background"] = ""
-                current_sgr_attributes["foreground"] = ""
+                sgr_attributes.clear()
 
             case parameter if (1 <= parameter <= 9 or
                                22 <= parameter <= 29):
                 # font styles
-                current_sgr_attributes["style"].add(f"sgr_{parameter}")
+                sgr_attributes.style.add(f"sgr_{parameter}")
 
             case parameter if 30 <= parameter <= 37:
                 # Set foreground color
-                current_sgr_attributes["foreground"] = f"sgr_{parameter}"
+                sgr_attributes.foreground = f"sgr_{parameter}"
 
             case parameter if 40 <= parameter <= 47:
                 # Set background color
-                current_sgr_attributes["background"] = f"sgr_{parameter}"
+                sgr_attributes.background = f"sgr_{parameter}"
 
             case _:
-                raise NotImplementedError("Not supported yet.")
+                raise NotImplementedError("Not supported yet , parameter={parameter}.")
 
-    return current_sgr_attributes
+    return sgr_attributes
 
 
 class SequenceParser:
 
     def __init__(self) -> None:
-
-        self.DEFAULT_SGR_ATTRIBUTES = {"style": set(), "background": "", "foreground": ""}  # to class?
-        # refactor -> arg
-
-    def __process_char(self, mode: str, char: str, inter_converted: InterConverted, current_sgr_attributes: dict, current_index: int):
+        pass
+        
+    def __process_char(
+        self,
+        char: str,
+        mode: str,
+        inter_converted: InterConverted,
+        current_sgr_attributes: SgrAttributes,
+        current_index: int
+    ) -> tuple[InterConverted, int]:
         # https://stackoverflow.com/questions/23058564/checking-a-character-is-fullwidth-or-halfwidth-in-python
 
         if not inter_converted.validate():
@@ -66,8 +70,6 @@ class SequenceParser:
             else:
                 return False
 
-        is_new_wide = is_char_wide(char)
-
         def wide_replace_next_char():
             """If the new character is wide, replace the next character."""
             if current_index + 1 > len(inter_converted.text) - 1:
@@ -79,6 +81,8 @@ class SequenceParser:
                     inter_converted.text[current_index + 1:current_index + 3] = [wcharph, " "]
                 else:
                     inter_converted.text[current_index + 1] = wcharph
+
+        is_new_wide = is_char_wide(char)
 
         match mode:
             case "add":
@@ -141,14 +145,14 @@ class SequenceParser:
             case _:
                 raise ValueError("Incorrect mode argument.")
 
-    def parse_text(self, text: str, inter_converted, current_sgr_attributes, current_index) -> tuple[InterConverted, int]:
+    def parse_text(
+        self,
+        sequence: str,
+        inter_converted: InterConverted,
+        current_sgr_attributes: SgrAttributes,
+        current_index: int
+    ) -> tuple[InterConverted, int]:
         """Parse sequence only containing text."""
-
-        if inter_converted is None:
-            inter_converted = InterConverted()
-
-        if current_sgr_attributes is None:
-            current_sgr_attributes = copy.copy(self.DEFAULT_SGR_ATTRIBUTES)
 
         # Fill empty spaces if the cursor is moved.
         # exclude current
@@ -156,40 +160,43 @@ class SequenceParser:
         need = current_index - max_index - 1
         if need > 0:
             inter_converted.text.extend([" "] * need)  # space
-            inter_converted.styles.extend([copy.copy(self.DEFAULT_SGR_ATTRIBUTES)] * need)  # default
+            inter_converted.styles.extend([SgrAttributes() for _ in range(need)])  # default
 
         # process text
-        char_list = list(text)
+        char_list = list(sequence)
         for char in char_list:
 
             max_index = len(inter_converted.text) - 1
             if current_index > max_index:
                 # add new
-                inter_converted, current_index = self.__process_char("add", char, inter_converted, current_sgr_attributes, current_index)
+                inter_converted, current_index = self.__process_char(char, "add", inter_converted, current_sgr_attributes, current_index)
             else:
                 # overwrite
-                inter_converted, current_index = self.__process_char("overwrite", char, inter_converted, current_sgr_attributes, current_index)
+                inter_converted, current_index = self.__process_char(char, "overwrite", inter_converted, current_sgr_attributes, current_index)
 
         #
         return inter_converted, current_index
 
-    def parse_sgr(self, sequence: str, current_sgr_attributes: dict) -> dict:
+    def parse_sgr(
+        self,
+        sequence: str,
+        current_sgr_attributes: SgrAttributes
+    ) -> SgrAttributes:
         """Parse "Select Graphic Rendition" sequence."""
-
-        if current_sgr_attributes is None:
-            current_sgr_attributes = copy.copy(self.DEFAULT_SGR_ATTRIBUTES)
 
         extracter = ParametersExtractor()
         parameters = extracter.extract_sgr(sequence)
 
-        return sgr_parameters_to_attributes(parameters, current_sgr_attributes)
+        return _sgr_parameters_to_attributes(parameters, current_sgr_attributes)
 
-    def parse_el(self, sequence: str, inter_converted: InterConverted, current_index: int) -> InterConverted:
+    def parse_el(
+        self,
+        sequence: str,
+        inter_converted: InterConverted,
+        current_index: int
+    ) -> InterConverted:
         """Parse "Erase in Line" sequence."""
         # Cursor position does not change.
-
-        if inter_converted is None:
-            inter_converted = InterConverted()
 
         extracter = ParametersExtractor()
         parameter = extracter.extract_el(sequence)
@@ -205,7 +212,7 @@ class SequenceParser:
                 # If n is 1, clear from cursor to beginning of the line.
                 # include cursor char
                 inter_converted.text[0: current_index + 1] = [" "] * (current_index + 1)  # space
-                inter_converted.styles[0: current_index + 1] = [copy.copy(self.DEFAULT_SGR_ATTRIBUTES)] * (current_index + 1)  # default
+                inter_converted.styles[0: current_index + 1] = [SgrAttributes() for _ in range(current_index + 1)]  # default
 
             case 2:
                 # If n is 2, clear entire line.
@@ -216,11 +223,15 @@ class SequenceParser:
 
         return inter_converted
 
-    def parse_ed(self, sequence: str, inter_converted: InterConverted, current_index: int, parsed_screen: list, current_line_index: int) -> tuple[InterConverted, list]:
+    def parse_ed(
+        self,
+        sequence: str,
+        inter_converted: InterConverted,
+        current_index: int,
+        parsed_screen: deque,
+        current_line_index: int
+    ) -> tuple[InterConverted, deque]:
         """Parse "Erase in Display" sequence."""
-
-        if inter_converted is None:
-            inter_converted = InterConverted()
 
         extracter = ParametersExtractor()
         parameter = extracter.extract_ed(sequence)
@@ -229,7 +240,7 @@ class SequenceParser:
             case 0:
                 #  If n is 0 (or missing), clear from cursor to end of screen.
                 # Cursor position does not change.
-                parsed_screen = parsed_screen[0:current_line_index]
+                parsed_screen = deque( list(parsed_screen)[0:current_line_index] ) # refactor(perf)?
 
                 inter_converted.text = inter_converted.text[0: current_index]
                 inter_converted.styles = inter_converted.text[0: current_index]
@@ -237,14 +248,16 @@ class SequenceParser:
             case 1:
                 # If n is 1, clear from cursor to beginning of the screen.
                 # Cursor position does not change.
-                parsed_screen[0:current_line_index + 1] = [InterConverted() for _ in range(current_line_index + 1)]  # as newline
+                parsed_screen_list = list(parsed_screen) # refactor(perf)?
+                parsed_screen_list[0:current_line_index + 1] = [InterConverted() for _ in range(current_line_index + 1)]  # as newline
+                parsed_screen = deque(parsed_screen_list)
 
                 inter_converted.text[0: current_index + 1] = [" "] * (current_index + 1)
-                inter_converted.styles[0: current_index + 1] = [copy.copy(self.DEFAULT_SGR_ATTRIBUTES)] * (current_index + 1)
+                inter_converted.styles[0: current_index + 1] = [SgrAttributes() for _ in range(current_index + 1)]
 
             case 2:
                 # If n is 2, clear entire screen (and moves cursor to upper left on DOS ANSI.SYS).
-                parsed_screen = []
+                parsed_screen = deque()
                 inter_converted = InterConverted()
 
             case 3:
@@ -256,7 +269,14 @@ class SequenceParser:
 
         return inter_converted, parsed_screen
 
-    def parse_cup(self, sequence: str, inter_converted: InterConverted, current_index: int, parsed_screen: list, current_line_index: int) -> tuple[InterConverted, int, list, int]:
+    def parse_cup(
+        self,
+        sequence: str,
+        inter_converted: InterConverted,
+        current_index: int,
+        parsed_screen: deque,
+        current_line_index: int
+    ) -> dict:
         """Parse "Cursor Position" sequence."""
 
         extracter = ParametersExtractor()
@@ -289,45 +309,58 @@ class SequenceParser:
         current_index = next_index
         current_line_index = next_line_index
 
-        return inter_converted, current_index, parsed_screen, current_line_index
+        return {
+            "inter_converted": inter_converted,
+            "current_index": current_index,
+            "parsed_screen": parsed_screen,
+            "current_line_index": current_line_index
+        }
 
-    def parse_newline(self, sequence: str, inter_converted: InterConverted, current_index: int, parsed_screen: list, current_line_index: int) -> tuple[InterConverted, int, list, int]:
+    def parse_newline(
+        self,
+        sequence: str,
+        inter_converted: InterConverted,
+        current_index: int,
+        parsed_screen: deque,
+        current_line_index: int
+    ) -> dict:
         """Parse "newline("\r\n", "\n", "\r")" sequence."""
-
-        if inter_converted is None:
-            inter_converted = InterConverted()
 
         if sequence not in ("\r\n", "\n", "\r"):
             raise RuntimeError()
 
-        # \r (Carriage Return)
-        # moves the cursor to the beginning of the line without advancing to the next line
         if sequence == "\r":
+            # \r (Carriage Return)
+            # moves the cursor to the beginning of the line without advancing to the next line
             current_index = 0
-            next_line_index = current_line_index
         else:
             next_line_index = current_line_index + 1
 
-        # Fill empty lines (including current).
-        max_line_index = len(parsed_screen) - 1
-        need = next_line_index - max_line_index
-        if need > 0:
-            # Create independent InterConverted
-            parsed_screen.extend([InterConverted() for _ in range(need)])
+            # Fill empty lines (including current).
+            max_line_index = len(parsed_screen) - 1
+            need = next_line_index - max_line_index
+            if need > 0:
+                # Create independent InterConverted
+                parsed_screen.extend([InterConverted() for _ in range(need)])
 
-        # move cursor to next_line_index
-        inter_converted = parsed_screen[next_line_index]
+            # move cursor to next_line_index
+            inter_converted = parsed_screen[next_line_index]
 
-        # Moves the cursor to next row.
-        current_line_index = next_line_index
+            # Moves the cursor to next row.
+            current_line_index = next_line_index
 
-        # "\r\n" as "\r (Carriage Return)" + "\n (Line Feed)"
-        # moves the cursor to the beginning and moves the cursor down to the next line
-        if sequence == "\r\n":
-            current_index = 0
+            # "\r\n" as "\r (Carriage Return)" + "\n (Line Feed)"
+            # moves the cursor to the beginning and moves the cursor down to the next line
+            if sequence == "\r\n":
+                current_index = 0
 
-        # \n (Line Feed)
-        # moves the cursor down to the next line without returning to the beginning of the line
-        # "current_index" does not change
+            # \n (Line Feed)
+            # moves the cursor down to the next line without returning to the beginning of the line
+            # "current_index" does not change
 
-        return inter_converted, current_index, parsed_screen, current_line_index
+        return {
+            "inter_converted": inter_converted,
+            "current_index": current_index,
+            "parsed_screen": parsed_screen,
+            "current_line_index": current_line_index
+        }
