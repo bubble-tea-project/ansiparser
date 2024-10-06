@@ -7,6 +7,7 @@ This module implements the underlying parser that converts sequences to InterCon
 
 import copy
 import unicodedata
+import itertools
 from collections import deque
 
 from .sequence_utils import ParametersExtractor
@@ -239,7 +240,7 @@ class SequenceParser:
             case 0:
                 #  If n is 0 (or missing), clear from cursor to end of screen.
                 # Cursor position does not change.
-                parsed_screen = parsed_screen[0:current_line_index]
+                parsed_screen = deque( list(parsed_screen)[0:current_line_index] ) # refactor(perf)?
 
                 inter_converted.text = inter_converted.text[0: current_index]
                 inter_converted.styles = inter_converted.text[0: current_index]
@@ -247,14 +248,16 @@ class SequenceParser:
             case 1:
                 # If n is 1, clear from cursor to beginning of the screen.
                 # Cursor position does not change.
-                parsed_screen[0:current_line_index + 1] = [InterConverted() for _ in range(current_line_index + 1)]  # as newline
+                parsed_screen_list = list(parsed_screen) # refactor(perf)?
+                parsed_screen_list[0:current_line_index + 1] = [InterConverted() for _ in range(current_line_index + 1)]  # as newline
+                parsed_screen = deque(parsed_screen_list)
 
                 inter_converted.text[0: current_index + 1] = [" "] * (current_index + 1)
                 inter_converted.styles[0: current_index + 1] = [SgrAttributes() for _ in range(current_index + 1)]
 
             case 2:
                 # If n is 2, clear entire screen (and moves cursor to upper left on DOS ANSI.SYS).
-                parsed_screen = []
+                parsed_screen = deque()
                 inter_converted = InterConverted()
 
             case 3:
