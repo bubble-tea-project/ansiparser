@@ -56,6 +56,7 @@ def to_html(inter_converted: InterConverted, placeholder=False) -> bs4.element.T
     filtered_style = []
     for index, item in enumerate(inter_converted.text):
 
+        # if ignore placeholder
         if (isinstance(item, WCharPH) and
             placeholder is True):
             # replace placeholders with spaces
@@ -63,7 +64,6 @@ def to_html(inter_converted: InterConverted, placeholder=False) -> bs4.element.T
             filtered_style.append(inter_converted.styles[index])
 
         if not isinstance(item, WCharPH):
-            # remove placeholder
             filtered_char.append(item)
             filtered_style.append(inter_converted.styles[index])
 
@@ -112,13 +112,13 @@ def to_string(inter_converted: InterConverted, placeholder=False) -> str:
     filtered_char = []
     for item in inter_converted.text:
 
+        # if ignore placeholder
         if (isinstance(item, WCharPH) and
                 placeholder is True):
             # replace placeholders with spaces
             filtered_char.append(" ")
 
         if not isinstance(item, WCharPH):
-            # remove placeholder
             filtered_char.append(item)
 
     return "".join(filtered_char)
