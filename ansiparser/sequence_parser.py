@@ -7,6 +7,7 @@ This module implements the underlying parser that converts sequences to InterCon
 
 import copy
 import unicodedata
+from collections import deque
 
 from .sequence_utils import ParametersExtractor
 from .structures import InterConverted, SgrAttributes, WCharPH
@@ -226,9 +227,9 @@ class SequenceParser:
         sequence: str,
         inter_converted: InterConverted,
         current_index: int,
-        parsed_screen: list,
+        parsed_screen: deque,
         current_line_index: int
-    ) -> tuple[InterConverted, list]:
+    ) -> tuple[InterConverted, deque]:
         """Parse "Erase in Display" sequence."""
 
         extracter = ParametersExtractor()
@@ -270,7 +271,7 @@ class SequenceParser:
         sequence: str,
         inter_converted: InterConverted,
         current_index: int,
-        parsed_screen: list,
+        parsed_screen: deque,
         current_line_index: int
     ) -> dict:
         """Parse "Cursor Position" sequence."""
@@ -317,7 +318,7 @@ class SequenceParser:
         sequence: str,
         inter_converted: InterConverted,
         current_index: int,
-        parsed_screen: list,
+        parsed_screen: deque,
         current_line_index: int
     ) -> dict:
         """Parse "newline("\r\n", "\n", "\r")" sequence."""
