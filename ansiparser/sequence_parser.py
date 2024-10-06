@@ -329,35 +329,34 @@ class SequenceParser:
         if sequence not in ("\r\n", "\n", "\r"):
             raise RuntimeError()
 
-        # \r (Carriage Return)
-        # moves the cursor to the beginning of the line without advancing to the next line
         if sequence == "\r":
+            # \r (Carriage Return)
+            # moves the cursor to the beginning of the line without advancing to the next line
             current_index = 0
-            next_line_index = current_line_index
         else:
             next_line_index = current_line_index + 1
 
-        # Fill empty lines (including current).
-        max_line_index = len(parsed_screen) - 1
-        need = next_line_index - max_line_index
-        if need > 0:
-            # Create independent InterConverted
-            parsed_screen.extend([InterConverted() for _ in range(need)])
+            # Fill empty lines (including current).
+            max_line_index = len(parsed_screen) - 1
+            need = next_line_index - max_line_index
+            if need > 0:
+                # Create independent InterConverted
+                parsed_screen.extend([InterConverted() for _ in range(need)])
 
-        # move cursor to next_line_index
-        inter_converted = parsed_screen[next_line_index]
+            # move cursor to next_line_index
+            inter_converted = parsed_screen[next_line_index]
 
-        # Moves the cursor to next row.
-        current_line_index = next_line_index
+            # Moves the cursor to next row.
+            current_line_index = next_line_index
 
-        # "\r\n" as "\r (Carriage Return)" + "\n (Line Feed)"
-        # moves the cursor to the beginning and moves the cursor down to the next line
-        if sequence == "\r\n":
-            current_index = 0
+            # "\r\n" as "\r (Carriage Return)" + "\n (Line Feed)"
+            # moves the cursor to the beginning and moves the cursor down to the next line
+            if sequence == "\r\n":
+                current_index = 0
 
-        # \n (Line Feed)
-        # moves the cursor down to the next line without returning to the beginning of the line
-        # "current_index" does not change
+            # \n (Line Feed)
+            # moves the cursor down to the next line without returning to the beginning of the line
+            # "current_index" does not change
 
         return {
             "inter_converted": inter_converted,
