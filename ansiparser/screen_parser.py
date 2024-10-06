@@ -78,17 +78,21 @@ class ScreenParser:
         # return [string] if there is no newline.
         return results
 
-    def __parse_str_only(self) -> str:
-        """Parse the string only; remove all ANSI sequences."""
+    def __parse_str_only(self, peek: bool) -> str:
+        """Parse the string only; remove all ANSI sequences. \n
+        If `peek` is True, peek at the current buffer; otherwise, pop elements from the left side of the buffer."""
 
         if not self.screen_buffer:
             raise IndexError("screen_buffer is empty")
 
+        if peek is True:
+            raw_screen = self.screen_buffer[0]
+        else:
+            raw_screen = self.screen_buffer.popleft()
+
         csi_checker = CSIChecker()
 
-        raw_screen = self.screen_buffer[0]
         parsed_string = ""
-
         for data in raw_screen:
 
             splited_sequences = split_by_ansi(data)
@@ -96,7 +100,6 @@ class ScreenParser:
 
                 if not csi_checker.is_csi(sequence_str):
                     parsed_string += sequence_str
-
         #
         return parsed_string
 
@@ -289,7 +292,7 @@ class ScreenParser:
 
     def peek_string(self) -> str:
         """Peek at the current buffer; parse the string only and remove all ANSI sequences."""
-        return self.__parse_str_only()
+        return self.__parse_str_only(peek=True)
 
     def to_formatted_string(self, peek=False) -> list[str]:
         """Convert the current `parsed_screen` to a formatted string. 
