@@ -36,7 +36,7 @@ def _sgr_parameters_to_attributes(parameters: list[int], sgr_attributes: SgrAttr
                 sgr_attributes.background = f"sgr_{parameter}"
 
             case _:
-                raise NotImplementedError("Not supported yet.")
+                raise NotImplementedError("Not supported yet , parameter={parameter}.")
 
     return sgr_attributes
 
