@@ -37,7 +37,6 @@ class SgrAttributes:
             bool: True if the all attributes are equal, False otherwise.
         """
         if isinstance(other, SgrAttributes):
-
             return (self.style == other.style and
                     self.background == other.background and
                     self.foreground == other.foreground)
@@ -67,7 +66,7 @@ class InterConverted:
     def empty(self) -> bool:
         """Return True if the InterConverted is empty, False otherwise."""
         if (not self.text and
-                not self.styles):
+            not self.styles):
             return True
         else:
             return False
