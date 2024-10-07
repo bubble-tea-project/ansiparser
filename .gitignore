@@ -5,4 +5,4 @@ poetry.lock
 .vscode
 _tests
 dist
-ansiparser.egg-info
+
