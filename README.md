@@ -26,12 +26,12 @@ Parse ANSI escape sequences into screen outputs. This library implements a parse
 
 ## 📦 Installation
 AnsiParser is available on [PyPI](https://pypi.org/project/ansiparser/):
-```console
+```bash
 python -m pip install ansiparser
 ```
 
 Or you can use [Poetry](https://github.com/python-poetry/poetry):
-```console
+```bash
 poetry add ansiparser
 ```
 
