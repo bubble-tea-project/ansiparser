@@ -201,6 +201,14 @@ class ScreenParser:
         #
         return parsed_screen
 
+    def _buffer(self) -> None | deque:
+        """return screen_buffer"""
+
+        if not self.screen_buffer:
+            return None
+        else:
+            return self.screen_buffer
+
     def from_parsed_screen(self, parsed_screen: deque) -> None:
         """Initialize from an existing `parsed_screen`."""
 
@@ -238,14 +246,6 @@ class ScreenParser:
         """Remove the current screen_buffer and parse it."""
         self.current_parsed_screen = self.__parse(peek=False)
 
-    def buffer(self) -> None | deque:
-        """return screen_buffer"""
-
-        if not self.screen_buffer:
-            return None
-        else:
-            return self.screen_buffer
-
     def full(self) -> bool:
         """If the current parsed screen is full."""
 
@@ -278,18 +278,18 @@ class ScreenParser:
         else:
             return False
 
-    def buffer_clear(self) -> None:
+    def clear_buffer(self) -> None:
         """clear screen_buffer"""
 
         self.screen_buffer.clear()
 
-    def buffer_clear_old(self) -> None:
+    def clear_old_buffer(self) -> None:
         """Clear the old (finished) screen_buffer."""
 
         while self.finished():
             self.screen_buffer.popleft()
 
-    def parsed_screen(self) -> deque:
+    def get_parsed_screen(self) -> deque:
         """return underlying current `parsed_screen` """
         return copy.deepcopy(self.current_parsed_screen)
 
