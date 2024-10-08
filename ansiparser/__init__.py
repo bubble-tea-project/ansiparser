@@ -17,5 +17,5 @@ Basic usage:
 
 """
 
-from .api import new_screen, from_inter_converted
+from .api import new_screen, from_screen
 
