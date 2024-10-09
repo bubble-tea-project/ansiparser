@@ -201,15 +201,7 @@ class ScreenParser:
         #
         return parsed_screen
 
-    def _buffer(self) -> None | deque:
-        """return screen_buffer"""
-
-        if not self.screen_buffer:
-            return None
-        else:
-            return self.screen_buffer
-
-    def from_parsed_screen(self, parsed_screen: deque) -> None:
+    def _from_parsed_screen(self, parsed_screen: deque) -> None:
         """Initialize from an existing `parsed_screen`."""
 
         if not (type(parsed_screen) is deque and
@@ -219,6 +211,14 @@ class ScreenParser:
             raise TypeError()
         else:
             self.current_parsed_screen = parsed_screen
+
+    def _buffer(self) -> None | deque:
+        """return screen_buffer"""
+
+        if not self.screen_buffer:
+            return None
+        else:
+            return self.screen_buffer
 
     def put(self, string: str) -> None:
         """Add new strings to screen_buffer"""

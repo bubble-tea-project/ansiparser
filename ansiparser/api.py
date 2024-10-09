@@ -20,6 +20,6 @@ def from_screen(parsed_screen: deque) -> screen_parser.ScreenParser:
     """Initialize the ScreenParser from an existing parsed screen."""
 
     screen_parser_class = screen_parser.ScreenParser()
-    screen_parser_class.from_parsed_screen(parsed_screen)
+    screen_parser_class._from_parsed_screen(parsed_screen)
 
     return screen_parser_class
