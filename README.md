@@ -50,6 +50,10 @@ print(converted) # ['Hello-World!']
 ```
 
 
+## 🔗 Links
+- [AnsiParser Documentation](https://bubble-tea-project.github.io/ansiparser/)
+
+
 ## 📜 License
 [![GitHub License](https://img.shields.io/github/license/bubble-tea-project/ansiparser)](https://github.com/bubble-tea-project/ansiparser/blob/main/LICENSE)
 
