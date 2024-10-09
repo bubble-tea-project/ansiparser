@@ -13,15 +13,33 @@ author = 'vHrqO'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ['sphinx.ext.autodoc',
+              'myst_parser',
+              ]
+
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+
+# sphinx.ext.linkcode 
+# "sphinx.ext.linkcode",
+# wait impl
 
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+html_theme = 'furo'
+
+html_title = "AnsiParser"
+
+html_favicon = "_static/bubble_tea_flat.svg"
+
+
+# A list of paths that contain custom static files (such as style sheets or script files). 
+# Relative paths are taken as relative to the configuration directory. 
+# They are copied to the output’s _static directory after the theme’s static files,
+#  so a file named default.css will overwrite the theme’s default.css.
 html_static_path = ['_static']
