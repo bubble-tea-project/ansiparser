@@ -7,6 +7,7 @@ A convenient library for converting ANSI escape sequences into text or HTML.
 
 [![PyPI - Stable Version](https://img.shields.io/pypi/v/ansiparser?label=stable)](https://pypi.org/project/ansiparser/#history)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ansiparser)](https://pypi.org/project/ansiparser/)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bubble-tea-project/ansiparser/docs.yml?label=docs)](https://github.com/bubble-tea-project/ansiparser/actions/workflows/docs.yml)
 [![GitHub License](https://img.shields.io/github/license/bubble-tea-project/ansiparser)](https://github.com/bubble-tea-project/ansiparser/blob/main/LICENSE)
 
 </div>
