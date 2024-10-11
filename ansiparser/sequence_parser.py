@@ -7,7 +7,6 @@ This module implements the underlying parser that converts sequences to InterCon
 
 import copy
 import unicodedata
-import itertools
 from collections import deque
 
 from .sequence_utils import ParametersExtractor

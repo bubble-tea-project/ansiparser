@@ -5,10 +5,18 @@ ansiparser.converter
 This module provides a converter to convert InterConverted to HTML or string.
 """
 
-import bs4
+from __future__ import annotations
+
+import typing
+
 from bs4 import BeautifulSoup
 
-from .structures import InterConverted, SgrAttributes, WCharPH
+from .structures import WCharPH
+
+if typing.TYPE_CHECKING:
+    import bs4
+
+    from .structures import InterConverted, SgrAttributes
 
 
 def html_lines_to_screen(html_lines: list) -> bs4.element.Tag:

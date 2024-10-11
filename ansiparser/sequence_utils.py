@@ -5,10 +5,15 @@ ansiparser.sequence_utils
 This module provides functions to check CSI sequences and extract their parameters.
 """
 
+from __future__ import annotations
+
 import re
-from typing import Pattern
+import typing
 
 from . import re_pattern
+
+if typing.TYPE_CHECKING:
+    from typing import Pattern
 
 
 class CSIChecker:

@@ -5,9 +5,14 @@ ansiparser.api
 This module implements the ansiparser API.
 """
 
-from collections import deque
+from __future__ import annotations
+
+import typing
 
 from . import screen_parser
+
+if typing.TYPE_CHECKING:
+    from collections import deque
 
 
 def new_screen(height=24,width=80) -> screen_parser.ScreenParser:
