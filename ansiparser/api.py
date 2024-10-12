@@ -21,7 +21,7 @@ def new_screen(height=24,width=80) -> screen_parser.ScreenParser:
     return screen_parser.ScreenParser(screen_height=height,screen_width=width)
 
 
-def from_screen(parsed_screen: deque) -> screen_parser.ScreenParser:
+def from_screen(parsed_screen: list) -> screen_parser.ScreenParser:
     """Initialize the ScreenParser from an existing parsed screen."""
 
     screen_parser_class = screen_parser.ScreenParser()
