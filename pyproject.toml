@@ -16,6 +16,7 @@ beautifulsoup4 = "^4.12.3"
 beautifulsoup4 = "^4.12.3"
 twine = "^5.1.1"
 build = "^1.2.2.post1"
+pytest = "^8.3.3"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^8.0.2"
