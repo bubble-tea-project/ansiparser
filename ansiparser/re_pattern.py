@@ -51,7 +51,7 @@ sgr_sequence = re.compile(R'''
 ''', re.VERBOSE)
 
 # Erase in Display
-# r'\x1B(?:\[([\d;]*)K)'
+# r'\x1B(?:\[([\d;]*)J)'
 erase_display_sequence = re.compile(R'''
     \x1B  # ESC
     (?:   # [ for CSI, followed by a control sequence
