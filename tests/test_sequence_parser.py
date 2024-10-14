@@ -7,9 +7,9 @@ from ansiparser.structures import InterConverted, SgrAttributes, WCharPH
 def test_sgr_parameters_to_attributes_clear():
 
     sgr_attributes = SgrAttributes()
-    sgr_attributes.style = {"sgr_1", "sgr_2"}
-    sgr_attributes.foreground = "sgr_30"
-    sgr_attributes.background = "sgr_40"
+    sgr_attributes.style = {"bold", "italic"}
+    sgr_attributes.foreground = "fg_black"
+    sgr_attributes.background = "bg_black"
 
     parameters = [0]  # Reset or normal
     result = _sgr_parameters_to_attributes(parameters, sgr_attributes)
@@ -24,7 +24,7 @@ def test_sgr_parameters_to_attributes(sgr_attributes):
 
     parameters = [31]  # Set foreground color to sgr_31
     result = _sgr_parameters_to_attributes(parameters, sgr_attributes)
-    assert result.foreground == "sgr_31"
+    assert result.foreground == "fg_red"
 
 
 @pytest.fixture
@@ -66,7 +66,7 @@ def test_parse_text_overwrite(sequence_parser, inter_converted, sgr_attributes):
 def test_parse_sgr(sequence_parser, sgr_attributes):
     sequence = "\x1b[31m"  # Foreground color to sgr_31
     result = sequence_parser.parse_sgr(sequence, sgr_attributes)
-    assert result.foreground == "sgr_31"
+    assert result.foreground == "fg_red"
 
 
 # Test parse_el

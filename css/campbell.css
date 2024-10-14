@@ -1,0 +1,23 @@
+/* color variables */
+:root {
+    --background: #0C0C0C;
+    --foreground: #CCCCCC;
+
+    --black: #0C0C0C;
+    --red: #C50F1F;
+    --green: #13A10E;
+    --yellow: #C19C00;
+    --blue: #0037DA;
+    --magenta: #881798;
+    --cyan: #3A96DD;
+    --white: #CCCCCC;
+
+    --brigh_black: #767676;
+    --brigh_red: #E74856;
+    --brigh_green: #16C60C;
+    --brigh_yellow: #F9F1A5;
+    --brigh_blue: #3B78FF;
+    --brigh_magenta: #B4009E;
+    --brigh_cyan: #61D6D6;
+    --brigh_white: #F2F2F2;
+}

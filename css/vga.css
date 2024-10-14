@@ -1,165 +1,23 @@
-body {
-    background-color: rgba(38, 38, 39, 1);
-}
+/* color variables */
+:root {
+    --background: rgba(0, 0, 0, 1);
+    --foreground: rgba(170, 170, 170, 1);
 
-.screen {
-    
-    color: white;
+    --black: rgba(0, 0, 0, 1);
+    --red: rgba(170, 0, 0, 1);
+    --green: rgba(0, 170, 0, 1);
+    --yellow: rgba(170, 85, 0, 1);
+    --blue: rgba(0, 0, 170, 1);
+    --magenta: rgba(170, 0, 170, 1);
+    --cyan: rgba(0, 170, 170, 1);
+    --white: rgba(170, 170, 170, 1);
 
-    font-family: monospace;
-
-}
-
-/* .line  {
-    min-height: 1lh;
-
-} */
-
-.line span {
-    white-space: pre;
-        
-}
-
-
-/* font styles */
-.sgr_0 {
-    /* reset */
-    font-weight: normal;
-    color: white;
-    background-color: rgba(35, 35, 35, 1);
-}
-
-
-.sgr_1 {
-    font-weight: bold;
-}
-
-.sgr_2 {
-    font-weight: lighter;
-}
-
-.sgr_3 {
-    font-style: italic;
-}
-
-.sgr_4 {
-    text-decoration: underline;
-}
-
-.sgr_5 {
-    animation: blinker 1s infinite;
-}
-
-.sgr_6 {
-    animation: blinker 1s infinite;
-}
-
-.sgr_8 {
-    visibility: hidden;
-}
-
-.sgr_9 {
-    text-decoration-line: line-through;
-}
-
-.sgr_22 {
-    font-weight: normal;
-
-}
-
-.sgr_23 {
-    font-style: normal;
-}
-
-.sgr_24 {
-    text-decoration: none;
-}
-
-.sgr_25 {
-    animation: none;
-}
-
-.sgr_28 {
-    visibility: visible
-}
-
-.sgr_29 {
-    text-decoration-line: none;
-}
-
-
-/* foreground color */
-.sgr_30 {
-    color: rgba(0, 0, 0, 1);
-}
-
-.sgr_31 {
-    color: rgba(170, 0, 0, 1);
-}
-
-.sgr_32 {
-    color: rgba(0, 170, 0, 1);
-}
-
-.sgr_33 {
-    color: rgba(170, 85, 0, 1);
-}
-
-.sgr_34 {
-    color: rgba(0, 0, 170, 1);
-}
-
-.sgr_35 {
-    color: rgba(170, 0, 170, 1);
-}
-
-.sgr_36 {
-    color: rgba(0, 170, 170, 1);
-}
-
-.sgr_37 {
-    color: rgba(170, 170, 170, 1);
-}
-
-
-/* background color */
-.sgr_40 {
-    background-color: rgba(0, 0, 0, 1);
-}
-
-.sgr_41 {
-    background-color: rgba(170, 0, 0, 1);
-}
-
-.sgr_42 {
-    background-color: rgba(0, 170, 0, 1);
-}
-
-.sgr_43 {
-    background-color: rgba(170, 85, 0, 1);
-}
-
-.sgr_44 {
-    background-color: rgba(0, 0, 170, 1);
-}
-
-.sgr_45 {
-    background-color: rgba(170, 0, 170, 1);
-}
-
-.sgr_46 {
-    background-color: rgba(0, 170, 170, 1);
-}
-
-.sgr_47 {
-    background-color: rgba(170, 170, 170, 1);
-}
-
-
-/*  */
- 
-@keyframes blinker {
-    from { opacity: 1.0; }
-    50% { opacity: 0.5; }
-    to { opacity: 1.0; }
+    --brigh_black: rgba(85, 85, 85, 1);
+    --brigh_red: rgba(255, 85, 85, 1);
+    --brigh_green: rgba(85, 255, 85, 1);
+    --brigh_yellow: rgba(255, 255, 85, 1);
+    --brigh_blue: rgba(85, 85, 255, 1);
+    --brigh_magenta: rgba(255, 85, 255, 1);
+    --brigh_cyan: rgba(85, 255, 255, 1);
+    --brigh_white: rgba(255, 255, 255, 1);
 }

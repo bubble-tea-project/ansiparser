@@ -1,0 +1,222 @@
+body {
+    background-color: #0C0C0C;
+}
+
+.screen {
+    color: #CCCCCC;
+    font-family: monospace;
+}
+
+.line span {
+    white-space: pre;
+}
+
+
+/* font styles */
+.bold {
+    font-weight: bold;
+}
+
+.dim {
+    opacity: 0.5;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.slow_blink {
+    animation: blinker 1s infinite;
+}
+
+.rapid_blink {
+    animation: 0.5 blinker 1s infinite;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.strikethrough {
+    text-decoration-line: line-through;
+}
+
+.normal {
+    font-weight: normal;
+
+}
+
+.no_italic {
+    font-style: normal;
+}
+
+.no_underlined {
+    text-decoration: none;
+}
+
+.no_blinking {
+    animation: none;
+}
+
+.show {
+    visibility: visible
+}
+
+.no_strikethrough {
+    text-decoration-line: none;
+}
+
+
+/* foreground color */
+.fg_black {
+    color: var(--black);
+}
+
+.fg_red {
+    color: var(--red);
+}
+
+.fg_green {
+    color: var(--green);
+}
+
+.fg_yellow {
+    color: var(--yellow);
+}
+
+.fg_blue {
+    color: var(--blue);
+}
+
+.fg_magenta {
+    color: var(--magenta);
+}
+
+.fg_cyan {
+    color: var(--cyan);
+}
+
+.fg_white {
+    color: var(--white);
+}
+
+/* foreground Bright color */
+.fg_bright_black {
+    color: var(--brigh_black);
+}
+
+.fg_bright_red {
+    color: var(--brigh_red);
+}
+
+.fg_bright_green {
+    color: var(--brigh_green);
+}
+
+.fg_bright_yellow {
+    color: var(--brigh_yellow);
+}
+
+.fg_bright_blue {
+    color: var(--brigh_blue);
+}
+
+.fg_bright_magenta {
+    color: var(--brigh_magenta);
+}
+
+.fg_bright_cyan {
+    color: var(--brigh_cyan);
+}
+
+.fg_bright_white {
+    color: var(--brigh_white);
+}
+
+
+/* background color */
+.bg_black {
+    background-color: var(--black);
+}
+
+.bg_red {
+    background-color: var(--red);
+}
+
+.bg_green {
+    background-color: var(--green);
+}
+
+.bg_yellow {
+    background-color: var(--yellow);
+}
+
+.bg_blue {
+    background-color: var(--blue);
+}
+
+.bg_magenta {
+    background-color: var(--magenta);
+}
+
+.bg_cyan {
+    background-color: var(--cyan);
+}
+
+.bg_white {
+    background-color: var(--white);
+}
+
+
+/* background Bright color */
+.bg_bright_black {
+    background-color: var(--brigh_black);
+}
+
+.bg_bright_red {
+    background-color: var(--brigh_red);
+}
+
+.bg_bright_green {
+    background-color: var(--brigh_green);
+}
+
+.bg_bright_yellow {
+    background-color: var(--brigh_yellow);
+}
+
+.bg_bright_blue {
+    background-color: var(--brigh_blue);
+}
+
+.bg_bright_magenta {
+    background-color: var(--brigh_magenta);
+}
+
+.bg_bright_cyan {
+    background-color: var(--brigh_cyan);
+}
+
+.bg_bright_white {
+    background-color: var(--brigh_white);
+}
+
+
+/* animation */
+@keyframes blinker {
+    from {
+        opacity: 1.0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1.0;
+    }
+}

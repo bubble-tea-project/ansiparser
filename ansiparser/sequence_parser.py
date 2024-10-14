@@ -7,11 +7,67 @@ This module implements the underlying parser that converts sequences to InterCon
 
 import copy
 import unicodedata
-from collections import deque
 
 from .sequence_utils import ParametersExtractor
 from .structures import InterConverted, SgrAttributes, WCharPH
 
+
+SGR_MAP = {
+    1: "bold",
+    2: "dim",
+    3: "italic",
+    4: "underline",
+    5: "slow_blink",
+    6: "rapid_blink",
+    7: "swap",
+    8: "hide",
+    9: "strikethrough",
+
+    22: "normal",
+    23: "no_italic",
+    24: "no_underlined",
+    25: "no_blinking",
+    27: "no_swap",
+    28: "show",
+    29: "no_strikethrough",
+
+    30: "fg_black",
+    31: "fg_red",
+    32: "fg_green",
+    33: "fg_yellow",
+    34: "fg_blue",
+    35: "fg_magenta",
+    36: "fg_cyan",
+    37: "fg_white",
+
+    40: "bg_black",
+    41: "bg_red",
+    42: "bg_green",
+    43: "bg_yellow",
+    44: "bg_blue",
+    45: "bg_magenta",
+    46: "bg_cyan",
+    47: "bg_white",
+
+    90: "fg_brigh_black",
+    91: "fg_brigh_red",
+    92: "fg_brigh_green",
+    93: "fg_brigh_yellow",
+    94: "fg_brigh_blue",
+    95: "fg_brigh_magenta",
+    96: "fg_brigh_cyan",
+    97: "fg_brigh_white",
+
+    100: "bg_brigh_black",
+    101: "bg_brigh_red",
+    102: "bg_brigh_green",
+    103: "bg_brigh_yellow",
+    104: "bg_brigh_blue",
+    105: "bg_brigh_magenta",
+    106: "bg_brigh_cyan",
+    107: "bg_brigh_white"
+
+}
 
 def _sgr_parameters_to_attributes(parameters: list[int], sgr_attributes: SgrAttributes) -> SgrAttributes:
     """Convert SGR parameters to attributes."""
@@ -26,15 +82,17 @@ def _sgr_parameters_to_attributes(parameters: list[int], sgr_attributes: SgrAttr
             case parameter if (1 <= parameter <= 9 or
                                22 <= parameter <= 29):
                 # font styles
-                sgr_attributes.style.add(f"sgr_{parameter}")
+                sgr_attributes.style.add(SGR_MAP[parameter])
 
-            case parameter if 30 <= parameter <= 37:
+            case parameter if (30 <= parameter <= 37 or
+                               90 <= parameter <= 97):
                 # Set foreground color
-                sgr_attributes.foreground = f"sgr_{parameter}"
+                sgr_attributes.foreground = SGR_MAP[parameter]
 
-            case parameter if 40 <= parameter <= 47:
+            case parameter if (40 <= parameter <= 47 or
+                               100 <= parameter <= 107):
                 # Set background color
-                sgr_attributes.background = f"sgr_{parameter}"
+                sgr_attributes.background = SGR_MAP[parameter]
 
             case _:
                 raise NotImplementedError(f"Not supported yet , parameter={parameter}.")
