@@ -14,8 +14,13 @@ beautifulsoup4 = "^4.12.3"
 
 [tool.poetry.group.dev.dependencies]
 beautifulsoup4 = "^4.12.3"
+
+
+[tool.poetry.group.packaging.dependencies]
 twine = "^5.1.1"
 build = "^1.2.2.post1"
+
+[tool.poetry.group.test.dependencies]
 pytest = "^8.3.3"
 
 [tool.poetry.group.docs.dependencies]
