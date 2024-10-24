@@ -1,25 +1,7 @@
 import pytest
 from bs4 import BeautifulSoup
-from ansiparser.converter import html_lines_to_screen, sgr_attributes_to_css, to_html, to_string
+from ansiparser.converter import sgr_attributes_to_css, to_html, to_string
 from ansiparser.structures import InterConverted, SgrAttributes, WCharPH
-
-
-def test_html_lines_to_screen():
-    # Prepare test HTML lines
-    soup = BeautifulSoup("", "html.parser")
-    line1 = soup.new_tag("div")
-    line1.string = "Line 1"
-    line2 = soup.new_tag("div")
-    line2.string = "Line 2"
-
-    html_lines = [line1, line2]
-    screen_div = html_lines_to_screen(html_lines)
-
-    assert screen_div.name == "div"
-    assert "screen" in screen_div["class"]
-    assert len(screen_div.select("div.line") ) == 2
-    assert screen_div.select("div.line")[0].string == "Line 1"
-    assert screen_div.select("div.line")[1].string == "Line 2"
 
 
 def test_sgr_attributes_to_css():

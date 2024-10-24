@@ -72,7 +72,7 @@ def test_to_html(screen_parser):
     screen_parser.parse()
 
     html_output = screen_parser.to_html()
-    assert html_output == '<div class="screen"><div class="line"><span class="">Hello</span></div><div class="line"><span class="">     World</span></div></div>'
+    assert html_output == ['<div class="line"><span class="">Hello</span></div>','<div class="line"><span class="">     World</span></div>']
 
 
 
