@@ -47,7 +47,7 @@ print(converted_str) # ['Hello-World!']
 
 converted_html = ansip_screen.to_html()
 print(converted_html) 
-# <div class="screen"><div class="line"><span class="">Hello-World!</span></div></div>
+# <div class="line"><span class="">Hello-World!</span></div>
 ```
 
 
