@@ -244,7 +244,10 @@ class ScreenParser:
 
     def parse(self) -> None:
         """Remove the current screen_buffer and parse it."""
-        self.current_parsed_screen = self.__parse(peek=False)
+
+        # Parse only when the screen_buffer is not empty.
+        if self.screen_buffer:
+            self.current_parsed_screen = self.__parse(peek=False)
 
     def full(self) -> bool:
         """If the current parsed screen is full."""
