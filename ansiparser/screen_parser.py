@@ -314,7 +314,7 @@ class ScreenParser:
 
         return parsed_string_list
 
-    def to_html(self, peek=False) -> str:
+    def to_html(self, peek=False) -> list[str]:
         """Convert the current `parsed_screen` to HTML. 
         If `peek` is True, peek at the current buffer and convert it to HTML."""
 
@@ -327,10 +327,6 @@ class ScreenParser:
         for parsed_line in parsed_screen:
 
             html_tag = converter.to_html(parsed_line)
-            html_lines.append(html_tag)
+            html_lines.append(str(html_tag))
 
-        screen_html = converter.html_lines_to_screen(html_lines)
-
-        return str(screen_html)
-
-
+        return html_lines

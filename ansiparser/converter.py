@@ -19,20 +19,6 @@ if typing.TYPE_CHECKING:
     from .structures import InterConverted, SgrAttributes
 
 
-def html_lines_to_screen(html_lines: list) -> bs4.element.Tag:
-    """Merge multiple line <div> elements into a single screen <div>."""
-    soup = BeautifulSoup("", "html.parser")
-
-    screen_div = soup.new_tag("div")
-    screen_div["class"] = "screen"
-
-    for line in html_lines:
-        line["class"] = "line"
-        screen_div.append(line)
-
-    return screen_div
-
-
 def sgr_attributes_to_css(sgr_attributes: SgrAttributes) -> str:
     """Convert SGR attributes to CSS class."""
 
@@ -54,10 +40,14 @@ def to_html(inter_converted: InterConverted, placeholder=False) -> bs4.element.T
 
     soup = BeautifulSoup("", "html.parser")
     line_div = soup.new_tag("div")
+    line_div["class"] = "line"
 
     # If empty, treat as a newline.
     if inter_converted.empty():
-        return soup.new_tag("br")
+        newline_div = soup.new_tag("br")
+        newline_div["class"] = "line"
+
+        return newline_div
 
     # Process placeholders for wide characters.
     filtered_char = []
