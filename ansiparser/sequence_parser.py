@@ -220,7 +220,7 @@ class SequenceParser:
                 inter_converted.clear()
 
             case _:
-                raise RuntimeError()
+                raise ValueError("Incorrect parameter.")
 
         return inter_converted
 
@@ -264,7 +264,7 @@ class SequenceParser:
                 raise NotImplementedError()
 
             case _:
-                raise RuntimeError()
+                raise ValueError("Incorrect parameter.")
 
         return inter_converted, parsed_screen
 
@@ -325,7 +325,7 @@ class SequenceParser:
         """Parse "newline("\r\n", "\n", "\r")" sequence."""
 
         if sequence not in ("\r\n", "\n", "\r"):
-            raise RuntimeError()
+            raise ValueError("The sequence is not a newline sequence.")
 
         if sequence == "\r":
             # \r (Carriage Return)

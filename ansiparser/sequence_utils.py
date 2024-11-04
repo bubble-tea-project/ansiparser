@@ -118,7 +118,7 @@ class ParametersExtractor:
             # All common sequences just use the parameters as a series of semicolon-separated numbers such as 1;2;3
             results = parameters_str.split(';')
             if len(results) != 2:
-                raise RuntimeError("Position parameters error.")
+                raise ValueError("Position parameters error.")
 
             # The values are 1-based, and default to 1 (top left corner) if omitted.
             if results[0] == "":

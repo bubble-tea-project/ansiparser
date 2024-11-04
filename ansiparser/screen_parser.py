@@ -12,7 +12,7 @@ from collections import deque
 from . import converter, re_pattern
 from .sequence_parser import SequenceParser
 from .sequence_utils import CSIChecker
-from .structures import InterConverted , SgrAttributes
+from .structures import InterConverted, SgrAttributes
 
 
 def apply_backspace(string: str) -> str:
@@ -105,7 +105,7 @@ class ScreenParser:
 
     def __parse_line(self, raw_line: str, parsed_screen: list) -> tuple[InterConverted, list]:
         """Parse the single line that is split by a newline character."""
-        
+
         csi_checker = CSIChecker()
         sequence_parser = SequenceParser()
 
@@ -208,7 +208,7 @@ class ScreenParser:
                 parsed_screen and
                 type(parsed_screen[0]) is InterConverted):
 
-            raise TypeError()
+            raise TypeError("Expected `parsed_screen` to be a non-empty list of `InterConverted` objects")
         else:
             self.current_parsed_screen = parsed_screen
 
