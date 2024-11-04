@@ -69,6 +69,7 @@ SGR_MAP = {
 
 }
 
+
 def _sgr_parameters_to_attributes(parameters: list[int], sgr_attributes: SgrAttributes) -> SgrAttributes:
     """Convert SGR parameters to attributes."""
 
@@ -104,7 +105,7 @@ class SequenceParser:
 
     def __init__(self) -> None:
         pass
-        
+
     def __process_char(
         self,
         char: str,
@@ -341,15 +342,14 @@ class SequenceParser:
         next_line_index = parameter[0] - 1
         next_index = parameter[1] - 1
 
-        if inter_converted is not None:
-            # append current line to screen
-            max_line_index = len(parsed_screen) - 1
-            if current_line_index > max_line_index:
-                # add new
-                parsed_screen.append(copy.deepcopy(inter_converted))
-            else:
-                # overwrite
-                parsed_screen[current_line_index] = copy.deepcopy(inter_converted)
+        # append current line to screen
+        max_line_index = len(parsed_screen) - 1
+        if current_line_index > max_line_index:
+            # add new
+            parsed_screen.append(copy.deepcopy(inter_converted))
+        else:
+            # overwrite
+            parsed_screen[current_line_index] = copy.deepcopy(inter_converted)
 
         # Fill empty lines (including current).
         max_line_index = len(parsed_screen) - 1
