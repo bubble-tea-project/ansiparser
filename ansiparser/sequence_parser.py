@@ -241,7 +241,7 @@ class SequenceParser:
             case 0:
                 #  If n is 0 (or missing), clear from cursor to end of screen.
                 # Cursor position does not change.
-                parsed_screen = parsed_screen[0:current_line_index]
+                parsed_screen = parsed_screen[0:current_line_index + 1]
 
                 inter_converted.text = inter_converted.text[0: current_index]
                 inter_converted.styles = inter_converted.text[0: current_index]
