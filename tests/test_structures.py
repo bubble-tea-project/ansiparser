@@ -24,15 +24,15 @@ class TestSgrAttributes:
         sgr2 = SgrAttributes()
         assert sgr1 == sgr2
 
-        sgr1.style.add("sgr_1")
+        sgr1.style.add("bold")
         assert sgr1 != sgr2
 
     def test_clear(self):
 
         sgr = SgrAttributes()
-        sgr.style.add("sgr_1")
-        sgr.background = "sgr_40"
-        sgr.foreground = "sgr_30"
+        sgr.style.add("bold")
+        sgr.background = "fg_blue"
+        sgr.foreground = "bg_white"
         sgr.clear()
 
         assert sgr.style == set()
@@ -44,8 +44,8 @@ class TestSgrAttributes:
         sgr = SgrAttributes()
         assert sgr.empty()
 
-        sgr.style.add("sgr_1")
-        assert not sgr.empty()
+        sgr.style.add("bold")
+        assert sgr.empty() is False
 
 
 class TestInterConverted:
@@ -71,15 +71,16 @@ class TestInterConverted:
         inter_converted = InterConverted()
         assert inter_converted.empty()
 
-        inter_converted.text.append("sample")
-        assert not inter_converted.empty()
+        inter_converted.text.append("t")
+        inter_converted.styles.append(SgrAttributes())
+        assert inter_converted.empty() is False
 
     def test_interconverted_validate(self):
 
         inter_converted = InterConverted()
-        inter_converted.text = ["t", "e", "s", "t"]
-        inter_converted.styles = [SgrAttributes() for _ in range(4)]
+        inter_converted.text = ["t"]
+        inter_converted.styles = [SgrAttributes()]
         assert inter_converted.validate()
 
-        inter_converted.text.append("n")
-        assert not inter_converted.validate()
+        inter_converted.text.append("e")
+        assert inter_converted.validate() is False
