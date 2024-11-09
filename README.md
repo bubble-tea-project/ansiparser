@@ -53,6 +53,7 @@ print(converted) # ['Hello-World!']
 
 ## 🔗 Links
 - [AnsiParser Documentation](https://bubble-tea-project.github.io/ansiparser/)
+- [AnsiParser Dart Version](https://bubble-tea-project.github.io/ansiparser-dart/)
 
 
 ## 📜 License
